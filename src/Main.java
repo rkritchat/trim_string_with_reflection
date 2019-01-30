@@ -10,25 +10,29 @@ public class Main {
     public static void main(String[] args) {
         Student st = new Student("1 ","   Krit chat ", "Rojanaphruk     ", 12);
         Teacher tc = new Teacher("1"," rk rith cat   ", "t eacher");
-        trimObj(st.getClass(), st);
-        trimObj(tc.getClass(), tc);
+        trimStringWithReflection(st);
+        trimStringWithReflection(tc);
         System.out.println(st);
         System.out.println(tc);
 
     }
-    private static void trimObj(Class tmp, Object obj){
-        Method[] declaredMethods = tmp.getDeclaredMethods();
+    private static void trimStringWithReflection(Object obj){
+        //Get all method inside object
+        Class clazz = obj.getClass();
+        Method[] declaredMethods = clazz.getDeclaredMethods();
 
         Stream.of(declaredMethods).forEach(e->{
+            //Check method start with get for get getter method
             if (e.getName().startsWith(GET)) {
                 try {
-                    Method getterMethod = tmp.getDeclaredMethod(e.getName());
-
+                    Method getterMethod = clazz.getDeclaredMethod(e.getName());
                     Object invoke = getterMethod.invoke(obj);
 
+                    //Check result returned is type String or not
                     if(invoke instanceof String){
-                        invoke.toString().trim();
-                        Method setterMethod = tmp.getDeclaredMethod(e.getName().replace(GET,SET),String.class);
+                        //get method setter
+                        Method setterMethod = clazz.getDeclaredMethod(e.getName().replace(GET,SET), String.class);
+                        //invoke method setter with pass value that trim already
                         setterMethod.invoke(obj, invoke.toString().trim());
                     }
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e1) {
@@ -36,7 +40,6 @@ public class Main {
                 }
             }
         });
-
     }
 }
 
