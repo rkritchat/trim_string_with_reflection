@@ -1,3 +1,5 @@
+package com;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
@@ -92,7 +94,7 @@ class Student{
 
     @Override
     public String toString() {
-        return "Student{" +
+        return "com.Student{" +
                 "stId='" + stId + '\'' +
                 ", stName='" + stName + '\'' +
                 ", stLastName='" + stLastName + '\'' +
@@ -137,7 +139,7 @@ class Teacher{
 
     @Override
     public String toString() {
-        return "Teacher{" +
+        return "com.Teacher{" +
                 "tcId='" + tcId + '\'' +
                 ", tcName='" + tcName + '\'' +
                 ", tcLastName='" + tcLastName + '\'' +
