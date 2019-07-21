@@ -21,20 +21,42 @@ public class ObjectValidator {
         NoteBookModel noteBookModel = new NoteBookModel();
         noteBookModel.setName("test");
         noteBookModel.setPrice(10);
+        noteBookModel.setTest(new String[0]);
 
         ProductModel productModel = new ProductModel();
         productModel.setNoteBookModel(noteBookModel);
 
         UserModel userModel = new UserModel();
         userModel.setProductModel(productModel);
-        String text = "userModel.getProductModel().getNoteBookModel()->.getName().getPrice().getTest()";
-        //String text = "userModel.getProductModel().getNoteBookModel().getName()";
+       // String text = "userModel.getProductModel().getNoteBookModel()->.getName().getPrice().getTest()";
+        String text = "userModel.getProductModel().getNoteBookModel().getName()";
         System.out.println(validateObject(userModel, text));  //userModel.getProductModel().getNoteBookModel().getName()
     }
 
     /**
      *
-     * This method use for checking text style
+     * This method use for validate object inside object to avoid legacy checking
+     * EX
+     *     On Style "userModel.getProductModel().getNoteBookModel()->.getName().getPrice().getTest()"
+     *
+     *          if(userModel!=null){
+     *              ProductModel poducModel = userModel.getProductModel();
+     *              if(poducModel != null){
+     *                  NoteBookModel noteBookModel = userModel.getProductModel().getNoteBookModel();
+     *                  if(noteBookModel!=null){
+     *                      if(noteBookModel.getName() == null){
+     *                          return "Name is required";
+     *                      }
+     *                      if(noteBookModel.getPrice()){
+     *                          return "Price is required";
+     *                      }
+     *                      if(noteBookModel.getTest()){
+     *                          return "Test is required";
+     *                      }
+     *                  }
+     *              }
+     *          }
+     *
      * The validator allow two method style
      * I. checking object inside object [normal style]
      *    - Ex
@@ -97,19 +119,14 @@ public class ObjectValidator {
      *  This method support catch and will exist when all method is validated.
      */
     private static String execute(Object object, List<String> methods, int counter, Map<String, Object> storage) {
-        try {
-            Object cache = storage.get(methods.get(counter));
-            Object rp = cache !=null ? cache : searchGetterMethod(object, methods.get(counter));
-            if (rp == null || (rp instanceof String && ((String) rp).trim().equals("")) || (rp instanceof Number && ((Number) rp).longValue() == 0)) {
-                return methods.get(counter).replace("get", "").replace("Model", "");
-            } else {
-                if (cache == null) storage.put(methods.get(counter), rp);
-                return methods.size() == counter + 1 ? null : execute(rp, methods, ++counter, storage);
-            }
-        } catch (Exception err) {
-            System.out.println(err);
+        Object cache = storage.get(methods.get(counter));
+        Object rp = cache !=null ? cache : searchGetterMethod(object, methods.get(counter));
+        if (rp == null || (rp instanceof String && ((String) rp).trim().equals("")) || (rp instanceof Number && ((Number) rp).longValue() == 0)) {
+            return methods.get(counter).replace("get", "").replace("Model", "");
+        } else {
+            if (cache == null) storage.put(methods.get(counter), rp);
+            return methods.size() == counter + 1 ? null : execute(rp, methods, ++counter, storage);
         }
-        return null;
     }
 
     /**
@@ -129,7 +146,7 @@ public class ObjectValidator {
         } catch (Exception err) {
             System.out.println("Exception occurred" + err);
         }
-        return null;
+        throw new RuntimeException("Method " + target+ " not found on " + object);
     }
 
     /**
