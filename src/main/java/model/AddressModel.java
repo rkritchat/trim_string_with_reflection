@@ -1,6 +1,9 @@
 package model;
 
+import anotation.Required;
+
 public class AddressModel {
+    @Required
     private String tel;
     private String state;
     private String road;

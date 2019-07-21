@@ -9,6 +9,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ *
+ *  This validator still have weakness because if some one changing getterMethod name system will away throw RuntimeException
+ *  so it will hard to change and hard for understand text pattern for someone new with this validator
+ */
 public class ObjectValidator {
 
     public static void main(String... args) {
@@ -28,16 +33,16 @@ public class ObjectValidator {
 
         UserModel userModel = new UserModel();
         userModel.setProductModel(productModel);
-       // String text = "userModel.getProductModel().getNoteBookModel()->.getName().getPrice().getTest()";
-        String text = "userModel.getProductModel().getNoteBookModel().getName()";
-        System.out.println(validateObject(userModel, text));  //userModel.getProductModel().getNoteBookModel().getName()
+        String text = "userModel.getProductModel().getNoteBookModel()->.getName().getPrice().getTest()";
+       // String text = "userModel.getProductModel().getNoteBookModel().getName()";
+        System.out.println(validateObject(userModel, UserModel.class, text));  //userModel.getProductModel().getNoteBookModel().getName()
     }
 
     /**
      *
      * This method use for validate object inside object to avoid legacy checking
      * EX
-     *     On Style "userModel.getProductModel().getNoteBookModel()->.getName().getPrice().getTest()"
+     *     On text "userModel.getProductModel().getNoteBookModel()->.getName().getPrice().getTest()" [Arrow style]
      *
      *          if(userModel!=null){
      *              ProductModel poducModel = userModel.getProductModel();
@@ -71,20 +76,24 @@ public class ObjectValidator {
      *    - Ex
      *          INPUT : userModel.getProductModel().getNoteBookModel()->.getName().getPrice().getTest()
      *          PROCESS :
-     *                   1. split text from allow format to normal format result will be list of String
+     *                   1. split text from arrow format to normal format result will be list of String
      *                      - userModel.getProductModel().getNoteBookModel().getName()
      *                      - userModel.getProductModel().getNoteBookModel().getPrice()
      *                      - userModel.getProductModel().getNoteBookModel().getTest()
      *                   2. process on normal style
      *                  ** PS if using this style system will store catch for avoid to getting getter method
+     *  In case mainObject is null will return mainObject name
      */
-    private static String validateObject(Object object, String text) {
+    private static String validateObject(Object mainObject, Class<?> userModelClass, String text) {
+        if(mainObject == null){
+            return userModelClass.getName().replace("model.","").replace("Model","");
+        }
         List<String> method = initMethod(text);
         Map<String, Object> storage = new HashMap<>();
         for (String target : method) {
             System.out.println("validate " + target);
             List<String> methods = removeBrackets(target);
-            String result = execute(object, methods, 0, storage);
+            String result = execute(mainObject, methods, 0, storage);
             if(result != null){
                 return result;
             }
@@ -94,7 +103,7 @@ public class ObjectValidator {
 
     /**
      *   Checking style
-     *   this method allow two style
+     *   this method arrow two style
      *
      *   I.  Normal style
      *      - EX userModel.getProductModel().getNoteBookModel().getName()

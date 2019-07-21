@@ -1,10 +1,14 @@
 package model;
 
+import anotation.Required;
+
 public class UserModel {
     private String lastName;
     private String firstName;
     private int age;
+    @Required
     private AddressModel address;
+    @Required
     private ProductModel productModel;
 
     public String getLastName() {
@@ -38,7 +42,6 @@ public class UserModel {
     public void setAddress(AddressModel address) {
         this.address = address;
     }
-
     public ProductModel getProductModel() {
         return productModel;
     }

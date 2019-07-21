@@ -1,8 +1,13 @@
 package model;
 
+import anotation.Required;
+
 public class NoteBookModel {
+    @Required
     private String name;
+    @Required
     private int price;
+    @Required
     private String[] test;
 
     public String getName() {
