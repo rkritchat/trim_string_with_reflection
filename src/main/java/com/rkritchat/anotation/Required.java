@@ -1,4 +1,4 @@
-package anotation;
+package com.rkritchat.anotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

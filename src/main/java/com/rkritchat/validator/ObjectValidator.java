@@ -1,8 +1,8 @@
-package com;
+package com.rkritchat.validator;
 
-import model.NoteBookModel;
-import model.ProductModel;
-import model.UserModel;
+import com.rkritchat.model.NoteBookModel;
+import com.rkritchat.model.ProductModel;
+import com.rkritchat.model.UserModel;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -86,7 +86,7 @@ public class ObjectValidator {
      */
     private static String validateObject(Object mainObject, Class<?> userModelClass, String text) {
         if(mainObject == null){
-            return userModelClass.getName().replace("model.","").replace("Model","");
+            return userModelClass.getName().replace("com.rkritchat.model.","").replace("Model","");
         }
         List<String> method = initMethod(text);
         Map<String, Object> storage = new HashMap<>();

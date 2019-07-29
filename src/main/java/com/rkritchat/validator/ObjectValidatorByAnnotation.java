@@ -1,10 +1,10 @@
-package com;
+package com.rkritchat.validator;
 
-import anotation.Required;
-import model.AddressModel;
-import model.NoteBookModel;
-import model.ProductModel;
-import model.UserModel;
+import com.rkritchat.anotation.Required;
+import com.rkritchat.model.AddressModel;
+import com.rkritchat.model.NoteBookModel;
+import com.rkritchat.model.ProductModel;
+import com.rkritchat.model.UserModel;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -37,7 +37,7 @@ public class ObjectValidatorByAnnotation {
     private static String validateObject(Object mainObject, Class<?> userModelClass) {
         try {
             if(mainObject == null){
-                return userModelClass.getName().replace("model.","");
+                return userModelClass.getName().replace("com.rkritchat.model.","");
             }
             Field[] declaredFields = mainObject.getClass().getDeclaredFields();
             for (Field field : declaredFields) {

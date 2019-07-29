@@ -1,10 +1,10 @@
-package com;
+package com.rkritchat.trimstring;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
-public class Main {
+public class TrimString {
 
     public static final String GET = "get";
     public static final String SET = "set";
@@ -94,7 +94,7 @@ class Student{
 
     @Override
     public String toString() {
-        return "com.Student{" +
+        return "com.rkritchat.trimstring.Student{" +
                 "stId='" + stId + '\'' +
                 ", stName='" + stName + '\'' +
                 ", stLastName='" + stLastName + '\'' +
@@ -139,7 +139,7 @@ class Teacher{
 
     @Override
     public String toString() {
-        return "com.Teacher{" +
+        return "com.rkritchat.trimstring.Teacher{" +
                 "tcId='" + tcId + '\'' +
                 ", tcName='" + tcName + '\'' +
                 ", tcLastName='" + tcLastName + '\'' +

@@ -1,6 +1,6 @@
-package model;
+package com.rkritchat.model;
 
-import anotation.Required;
+import com.rkritchat.anotation.Required;
 
 public class ProductModel {
     @Required
