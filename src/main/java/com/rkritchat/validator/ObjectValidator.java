@@ -1,10 +1,5 @@
 package com.rkritchat.validator;
 
-import com.rkritchat.model.NoteBookModel;
-import com.rkritchat.model.ProductModel;
-import com.rkritchat.model.UserModel;
-
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,7 +10,7 @@ import java.util.stream.Stream;
  *  This validator still have weakness because if some one changing getterMethod name system will away throw RuntimeException
  *  so it will hard to change and hard for understand text pattern for someone new with this validator
  */
-public class ObjectValidator {
+public class ObjectValidator extends validator{
 
     /**
      *
@@ -151,39 +146,4 @@ public class ObjectValidator {
         return Stream.of(split).filter(e -> e.contains("()")).map(e -> e.replace("()", "")).collect(Collectors.toList());
     }
 
-    private boolean validateString(String text){
-        return Optional.ofNullable(text).map(String::trim).filter(e -> e.length() > 0).isPresent();
-    }
-
-    private boolean validateList(List<?> test) {
-        return Optional.ofNullable(test).map(List::size).orElse(0) > 0;
-    }
-
-    private boolean isContainString(String text) {
-        return Optional.ofNullable(text).filter(e -> e.contains(" ")).isPresent();
-    }
-
-    private void isNumeric(String text, String message){
-       // Optional.ofNullable(text).filter(StringUtils::isNumeric).orElseThrow(() -> new RuntimeException(message));
-    }
-
-    private static boolean test(Object obj){
-        return obj == null ||
-                (obj instanceof String && ((String) obj).trim().equals("")) ||
-                (obj instanceof Number && ((Number) obj).longValue() == 0)  ||
-                (obj instanceof List && ((List) obj).size() == 0)           ||
-                (obj.getClass().isArray() && testArray(obj));
-    }
-
-    private static boolean testArray(Object obj){
-        return (obj instanceof Byte[] && ((Byte[]) obj).length == 0) ||
-                (obj instanceof Short[] && ((Short[]) obj).length == 0) ||
-                (obj instanceof Integer[] && ((Integer[]) obj).length == 0) ||
-                (obj instanceof Long[] && ((Long[]) obj).length == 0) ||
-                (obj instanceof Float[] && ((Float[]) obj).length == 0) ||
-                (obj instanceof Double[] && ((Double[]) obj).length == 0) ||
-                (obj instanceof Character[] && ((Character[]) obj).length == 0) ||
-                (obj instanceof Boolean[] && ((Boolean[]) obj).length == 0) ||
-                (obj instanceof Object[] && ((Object[]) obj).length == 0);
-    }
 }

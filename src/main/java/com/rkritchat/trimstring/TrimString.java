@@ -6,8 +6,8 @@ import java.util.stream.Stream;
 
 public class TrimString {
 
-    public static final String GET = "get";
-    public static final String SET = "set";
+    private static final String GET = "get";
+    private static final String SET = "set";
 
     public static void main(String[] args) {
         Student st = new Student("1 ","   Krit chat ", "Rojanaphruk     ", 12);

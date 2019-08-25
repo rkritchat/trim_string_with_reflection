@@ -10,7 +10,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.List;
 
-public class ObjectValidatorByAnnotation {
+public class ObjectValidatorByAnnotation extends validator{
 
     public static void main(String... args) {
         String[] people = {"1"};
@@ -80,25 +80,5 @@ public class ObjectValidatorByAnnotation {
 
     private static boolean isContainAnnotation(Method method){
         return method.getAnnotation(Required.class) != null && method.getName().startsWith("get");
-    }
-
-    private static boolean test(Object obj){
-        return obj == null ||
-                (obj instanceof String && ((String) obj).trim().equals("")) ||
-                (obj instanceof Number && ((Number) obj).longValue() == 0)  ||
-                (obj instanceof List && ((List) obj).size() == 0)           ||
-                (obj.getClass().isArray() && testArray(obj));
-    }
-
-    private static boolean testArray(Object obj){
-        return (obj instanceof Byte[] && ((Byte[]) obj).length == 0) ||
-                (obj instanceof Short[] && ((Short[]) obj).length == 0) ||
-                (obj instanceof Integer[] && ((Integer[]) obj).length == 0) ||
-                (obj instanceof Long[] && ((Long[]) obj).length == 0) ||
-                (obj instanceof Float[] && ((Float[]) obj).length == 0) ||
-                (obj instanceof Double[] && ((Double[]) obj).length == 0) ||
-                (obj instanceof Character[] && ((Character[]) obj).length == 0) ||
-                (obj instanceof Boolean[] && ((Boolean[]) obj).length == 0) ||
-                (obj instanceof Object[] && ((Object[]) obj).length == 0);
     }
 }
