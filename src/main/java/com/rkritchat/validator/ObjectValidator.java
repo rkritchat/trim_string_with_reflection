@@ -4,6 +4,7 @@ import com.rkritchat.model.NoteBookModel;
 import com.rkritchat.model.ProductModel;
 import com.rkritchat.model.UserModel;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,28 +17,6 @@ import java.util.stream.Stream;
  */
 public class ObjectValidator {
 
-    public static void main(String... args) {
-
-//		System.out.println(validateString(" a"));
-//		System.out.println(validateList(Arrays.asList("test",null)));
-//		System.out.println(isContainString(null));
-//		isNumeric("1234", "Invalid data");
-
-        NoteBookModel noteBookModel = new NoteBookModel();
-        noteBookModel.setName("test");
-        noteBookModel.setPrice(10);
-        noteBookModel.setTest(new String[0]);
-
-        ProductModel productModel = new ProductModel();
-        productModel.setNoteBookModel(noteBookModel);
-
-        UserModel userModel = new UserModel();
-        userModel.setProductModel(productModel);
-        String text = "userModel.getProductModel().getNoteBookModel()->.getName().getPrice().getTest()";
-       // String text = "userModel.getProductModel().getNoteBookModel().getName()";
-        System.out.println(validateObject(userModel, UserModel.class, text));  //userModel.getProductModel().getNoteBookModel().getName()
-    }
-
     /**
      *
      * This method use for validate object inside object to avoid legacy checking
@@ -45,8 +24,8 @@ public class ObjectValidator {
      *     On text "userModel.getProductModel().getNoteBookModel()->.getName().getPrice().getTest()" [Arrow style]
      *
      *          if(userModel!=null){
-     *              ProductModel poducModel = userModel.getProductModel();
-     *              if(poducModel != null){
+     *              ProductModel productModel = userModel.getProductModel();
+     *              if(productModel != null){
      *                  NoteBookModel noteBookModel = userModel.getProductModel().getNoteBookModel();
      *                  if(noteBookModel!=null){
      *                      if(noteBookModel.getName() == null){
@@ -82,18 +61,19 @@ public class ObjectValidator {
      *                      - userModel.getProductModel().getNoteBookModel().getTest()
      *                   2. process on normal style
      *                  ** PS if using this style system will store catch for avoid to getting getter method
-     *  In case mainObject is null will return mainObject name
+     *                     In case mainObject is null will return mainObject name
      */
-    private static String validateObject(Object mainObject, Class<?> userModelClass, String text) {
+    public static String validateObject(Object mainObject, String text) {
         if(mainObject == null){
-            return userModelClass.getName().replace("com.rkritchat.model.","").replace("Model","");
+            //return userModelClass.getName().replace("com.rkritchat.model.","").replace("Model","");
+            throw new NullPointerException("Main object is required.");
         }
         List<String> method = initMethod(text);
         Map<String, Object> storage = new HashMap<>();
         for (String target : method) {
-            System.out.println("validate " + target);
+            System.out.println("validate method " + target);
             List<String> methods = removeBrackets(target);
-            String result = execute(mainObject, methods, 0, storage);
+            String result = execute(mainObject, methods, storage);
             if(result != null){
                 return result;
             }
@@ -122,6 +102,10 @@ public class ObjectValidator {
         }
     }
 
+    private static String execute(Object object, List<String> methods, Map<String, Object> storage){
+        return execute(object, methods, 0, storage);
+    }
+
     /**
      *
      *  This is recursive method that use for calling searchGetterMethod
@@ -130,7 +114,7 @@ public class ObjectValidator {
     private static String execute(Object object, List<String> methods, int counter, Map<String, Object> storage) {
         Object cache = storage.get(methods.get(counter));
         Object rp = cache !=null ? cache : searchGetterMethod(object, methods.get(counter));
-        if (rp == null || (rp instanceof String && ((String) rp).trim().equals("")) || (rp instanceof Number && ((Number) rp).longValue() == 0)) {
+        if (test(rp)) {
             return methods.get(counter).replace("get", "").replace("Model", "");
         } else {
             if (cache == null) storage.put(methods.get(counter), rp);
@@ -183,4 +167,23 @@ public class ObjectValidator {
        // Optional.ofNullable(text).filter(StringUtils::isNumeric).orElseThrow(() -> new RuntimeException(message));
     }
 
+    private static boolean test(Object obj){
+        return obj == null ||
+                (obj instanceof String && ((String) obj).trim().equals("")) ||
+                (obj instanceof Number && ((Number) obj).longValue() == 0)  ||
+                (obj instanceof List && ((List) obj).size() == 0)           ||
+                (obj.getClass().isArray() && testArray(obj));
+    }
+
+    private static boolean testArray(Object obj){
+        return (obj instanceof Byte[] && ((Byte[]) obj).length == 0) ||
+                (obj instanceof Short[] && ((Short[]) obj).length == 0) ||
+                (obj instanceof Integer[] && ((Integer[]) obj).length == 0) ||
+                (obj instanceof Long[] && ((Long[]) obj).length == 0) ||
+                (obj instanceof Float[] && ((Float[]) obj).length == 0) ||
+                (obj instanceof Double[] && ((Double[]) obj).length == 0) ||
+                (obj instanceof Character[] && ((Character[]) obj).length == 0) ||
+                (obj instanceof Boolean[] && ((Boolean[]) obj).length == 0) ||
+                (obj instanceof Object[] && ((Object[]) obj).length == 0);
+    }
 }

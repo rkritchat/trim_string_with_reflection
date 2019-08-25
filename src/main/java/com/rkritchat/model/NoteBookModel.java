@@ -2,13 +2,17 @@ package com.rkritchat.model;
 
 import com.rkritchat.anotation.Required;
 
+import java.util.List;
+
 public class NoteBookModel {
     @Required
     private String name;
     @Required
     private int price;
     @Required
-    private String[] test;
+    private String[] people;
+    private double amount;
+    private List<String> address;
 
     public String getName() {
         return name;
@@ -26,11 +30,27 @@ public class NoteBookModel {
         this.price = price;
     }
 
-    public String[] getTest() {
-        return test;
+    public String[] getPeople() {
+        return people;
     }
 
-    public void setTest(String[] test) {
-        this.test = test;
+    public void setPeople(String[] people) {
+        this.people = people;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
+    public List<String> getAddress() {
+        return address;
+    }
+
+    public void setAddress(List<String> address) {
+        this.address = address;
     }
 }

@@ -16,7 +16,7 @@ public class ObjectValidatorByAnnotation {
         NoteBookModel noteBookModel = new NoteBookModel();
         noteBookModel.setName("test");
         noteBookModel.setPrice(12);
-        noteBookModel.setTest(new String[0]);
+        noteBookModel.setPeople(new String[0]);
 
         ProductModel productModel = new ProductModel();
         productModel.setNoteBookModel(noteBookModel);
