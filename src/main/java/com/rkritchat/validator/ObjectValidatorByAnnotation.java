@@ -8,15 +8,16 @@ import com.rkritchat.model.UserModel;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.List;
 
 public class ObjectValidatorByAnnotation {
 
     public static void main(String... args) {
-
+        String[] people = {"1"};
         NoteBookModel noteBookModel = new NoteBookModel();
         noteBookModel.setName("test");
         noteBookModel.setPrice(12);
-        noteBookModel.setPeople(new String[0]);
+        noteBookModel.setPeople(people);
 
         ProductModel productModel = new ProductModel();
         productModel.setNoteBookModel(noteBookModel);
@@ -44,7 +45,7 @@ public class ObjectValidatorByAnnotation {
                 if(field.getAnnotation(Required.class)!=null){
                     field.setAccessible(true);
                     Object result = field.get(mainObject);
-                    if (result == null || (result instanceof String && ((String) result).trim().equals("")) || (result instanceof Number && ((Number) result).longValue() == 0)) {
+                    if (test(result)) {
                         return field.getName().replace("get", "").replace("Model", "");
                     } else {
                         String rp = validateObject(result, result.getClass());
@@ -79,5 +80,25 @@ public class ObjectValidatorByAnnotation {
 
     private static boolean isContainAnnotation(Method method){
         return method.getAnnotation(Required.class) != null && method.getName().startsWith("get");
+    }
+
+    private static boolean test(Object obj){
+        return obj == null ||
+                (obj instanceof String && ((String) obj).trim().equals("")) ||
+                (obj instanceof Number && ((Number) obj).longValue() == 0)  ||
+                (obj instanceof List && ((List) obj).size() == 0)           ||
+                (obj.getClass().isArray() && testArray(obj));
+    }
+
+    private static boolean testArray(Object obj){
+        return (obj instanceof Byte[] && ((Byte[]) obj).length == 0) ||
+                (obj instanceof Short[] && ((Short[]) obj).length == 0) ||
+                (obj instanceof Integer[] && ((Integer[]) obj).length == 0) ||
+                (obj instanceof Long[] && ((Long[]) obj).length == 0) ||
+                (obj instanceof Float[] && ((Float[]) obj).length == 0) ||
+                (obj instanceof Double[] && ((Double[]) obj).length == 0) ||
+                (obj instanceof Character[] && ((Character[]) obj).length == 0) ||
+                (obj instanceof Boolean[] && ((Boolean[]) obj).length == 0) ||
+                (obj instanceof Object[] && ((Object[]) obj).length == 0);
     }
 }
